@@ -23,15 +23,14 @@ const char *subjects[] =
 {
     "Eesti keel",
     "Matemaatika",
-    "Kunstiopetus",
-    "Kirjandus"
+    "Kunstiopetus"
 };
 
 
 ESPRotary r = ESPRotary(ROTARY_PIN1, ROTARY_PIN2, CLICKS_PER_STEP);
 Button2 b = Button2(BUTTON_PIN);
 
-char *students[] = {
+char *subject0[] = {
   "Quentin Good",
   "Zakariya Ireland",
   "Amrit Allen",
@@ -44,8 +43,39 @@ char *students[] = {
   "Safa Ray"
 };
 
-int studentsCount = sizeof(students) / sizeof(char *) - 1;
+char *subject1[] = {
+  "Quentin",
+  "Zakariya",
+  "Amrit",
+  "Lina",
+  "Louie",
+  "Benedict",
+  "Nathaniel",
+  "Naseem",
+  "Leigh",
+  "Safa"
+};
+
+char *subject2[] = {
+  "Good",
+  "Ireland",
+  "Allen",
+  "Hail",
+  "Lu",
+  "Schofield",
+  "Kelley",
+  "Rooney",
+  "Clemons",
+  "Ray"
+};
+
+int subject0Count = sizeof(subject0) / sizeof(char *) - 1;
+int subject1Count = sizeof(subject1) / sizeof(char *) - 1;
+int subject2Count = sizeof(subject2) / sizeof(char *) - 1;
+
 int subjectsCount = sizeof(subjects) / sizeof(char *) - 1;
+
+int showNameDelay = 3000;
 
 /////////////////////////////////////////////////////////////////
 
@@ -53,8 +83,6 @@ void setup() {
   pinMode(VIBRATION_PIN, INPUT_PULLUP);
   Serial.begin(9600);
   delay(50);
-  Serial.println("\n\nSimple Counter");
-  Serial.println(studentsCount);
   
   r.setLeftRotationHandler(updateCounter);
   r.setRightRotationHandler(updateCounter);
@@ -82,13 +110,30 @@ void loop() {
 /////////////////////////////////////////////////////////////////
 void showName()
 {
-    Serial.println(students[random(0, studentsCount)]);
+    // Serial.println(students[random(0, studentsCount)]);
     ssd1306_setFixedFont(ssd1306xled_font6x8);
     ssd1306_clearScreen();
-    ssd1306_printFixed(0,  8, students[random(0, studentsCount)] , STYLE_NORMAL);
-    delay(3000);
+
+    switch (ssd1306_menuSelection(&menu))
+    {
+        case 0:
+            ssd1306_printFixed(0,  8, subject0[random(0, subject0Count)] , STYLE_NORMAL);
+            break;
+
+        case 1:
+            ssd1306_printFixed(0,  8, subject1[random(0, subject1Count)] , STYLE_NORMAL);
+            break;
+
+        case 2:
+            ssd1306_printFixed(0,  8, subject2[random(0, subject2Count)] , STYLE_NORMAL);
+            break;
+            
+        default:
+            break;
+    }
+    delay(showNameDelay);
     ssd1306_clearScreen();
-    ssd1306_showMenu( &menu );
+    ssd1306_showMenu(&menu);
 }
 
 // on left or right rotation
